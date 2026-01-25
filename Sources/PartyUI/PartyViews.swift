@@ -189,15 +189,9 @@ public struct HeaderDropdown: View {
                             .clipShape(.capsule)
                     }
                 }
-                if #available(iOS 17.0, *) {
-                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .frame(width: 24, height: 24, alignment: .center)
-                        .contentTransition(.symbolEffect(.replace))
-                } else {
-                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .frame(width: 24, height: 24, alignment: .center)
-                        .animation(.default.speed(1.5), value: isExpanded)
-                }
+                Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                    .frame(width: 24, height: 24, alignment: .center)
+                    .modifier(UpdatedIconAnimation(isOn: isExpanded))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -441,13 +435,7 @@ public struct ListToggleItem: View {
                     isOn.toggle()
                 }) {
                     LabeledContent {
-                        if #available(iOS 17.0, *) {
-                            Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                                .contentTransition(.symbolEffect(.replace))
-                        } else {
-                            Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                                .animation(.default.speed(1.5), value: isOn)
-                        }
+                        AnimatedToggle(isOn: isOn)
                     } label: {
                         HStack {
                             ListItemLabel(text: text, icon: icon)
@@ -460,13 +448,7 @@ public struct ListToggleItem: View {
                     isOn.toggle()
                 }) {
                     LabeledContent {
-                        if #available(iOS 17.0, *) {
-                            Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                                .contentTransition(.symbolEffect(.replace))
-                        } else {
-                            Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                                .animation(.default.speed(1.5), value: isOn)
-                        }
+                        AnimatedToggle(isOn: isOn)
                     } label: {
                         HStack {
                             if !icon.isEmpty {
@@ -481,6 +463,103 @@ public struct ListToggleItem: View {
             }
         } else {
             
+        }
+    }
+}
+
+public struct AnimatedToggle: View {
+    var isOn: Bool
+    
+    public init(isOn: Bool) {
+        self.isOn = isOn
+    }
+    
+    public var body: some View {
+        Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
+            .modifier(UpdatedIconAnimation(isOn: isOn))
+    }
+}
+
+public struct UpdatedIconAnimation: ViewModifier {
+    public var isOn: Bool
+    
+    public init(isOn: Bool) {
+        self.isOn = isOn
+    }
+    
+    public func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .contentTransition(.symbolEffect(.replace))
+        } else {
+            content
+                .animation(.default.speed(2), value: isOn)
+        }
+    }
+}
+
+public struct GlassyTextButtonField<Button: View>: View {
+    var titleKey: String
+    @Binding var text: String
+    var isDisabled: Bool = false
+    var useAutoCorrection: Bool = true
+    var useAutoCaptialization: Bool = true
+    var color: Color = secondaryBackgroundColor()
+    var cornerRadius: CGFloat = conditionalCornerRadius()
+    var capsuleField: Bool = false
+    var isInteractive: Bool = true
+    @ViewBuilder var button: Button
+    
+    public init(titleKey: String, text: Binding<String>, isDisabled: Bool = false, useAutoCorrection: Bool = true, useAutoCaptialization: Bool = true, color: Color = secondaryBackgroundColor(), cornerRadius: CGFloat = conditionalCornerRadius(), capsuleField: Bool = false, isInteractive: Bool = true, button: Button) {
+        self.titleKey = titleKey
+        self._text = text
+        self.useAutoCorrection = useAutoCorrection
+        self.useAutoCaptialization = useAutoCaptialization
+        self.isDisabled = isDisabled
+        self.color = color
+        self.cornerRadius = cornerRadius
+        self.capsuleField = capsuleField
+        self.isInteractive = isInteractive
+        self.button = button
+    }
+    
+    public var body: some View {
+        let color: Color = isDisabled ? .gray.opacity(0.2) : color
+        let fontColor: Color = isDisabled ? .gray : .primary
+        
+        if #available(iOS 26.0, *) {
+            let shape: AnyShape = capsuleField ? AnyShape(.capsule) : AnyShape(.rect(cornerRadius: cornerRadius))
+            let isInteractive: Bool = isDisabled ? false : true
+            
+            HStack {
+                TextField(titleKey, text: $text)
+                    .allowsHitTesting(!isDisabled)
+                    .foregroundStyle(fontColor)
+                    .textFieldStyle(.plain)
+                    .autocorrectionDisabled(useAutoCorrection ? false : true)
+                    .autocapitalization(useAutoCaptialization ? .sentences : .none)
+                button
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .clipShape(shape)
+            .modifier(DynamicGlassEffect(color: color, isInteractive: isInteractive))
+        } else {
+            let shape: AnyShape = capsuleField ? AnyShape(.capsule) : AnyShape(.rect(cornerRadius: cornerRadius))
+            
+            HStack {
+                TextField(titleKey, text: $text)
+                    .allowsHitTesting(!isDisabled)
+                    .foregroundStyle(fontColor)
+                    .textFieldStyle(.plain)
+                    .autocorrectionDisabled(useAutoCorrection ? false : true)
+                    .autocapitalization(useAutoCaptialization ? .sentences : .none)
+                button
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .clipShape(shape)
+            .modifier(DynamicGlassEffect(color: color, isInteractive: isInteractive))
         }
     }
 }

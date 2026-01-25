@@ -152,13 +152,17 @@ public struct GlassyButtonStyle: PrimitiveButtonStyle {
 
 public struct GlassyTextFieldStyle: TextFieldStyle {
     var isDisabled: Bool = false
+    var useAutoCorrection: Bool = true
+    var useAutoCaptialization: Bool = true
     var color: Color = secondaryBackgroundColor()
     var cornerRadius: CGFloat = conditionalCornerRadius()
     var capsuleField: Bool = false
     var isInteractive: Bool = true
     
-    public init(isDisabled: Bool = false, color: Color = secondaryBackgroundColor(), cornerRadius: CGFloat = conditionalCornerRadius(), capsuleField: Bool = false, isInteractive: Bool = true) {
+    public init(isDisabled: Bool = false, useAutoCorrection: Bool = true, useAutoCaptialization: Bool = true, color: Color = secondaryBackgroundColor(), cornerRadius: CGFloat = conditionalCornerRadius(), capsuleField: Bool = false, isInteractive: Bool = true) {
         self.isDisabled = isDisabled
+        self.useAutoCorrection = useAutoCorrection
+        self.useAutoCaptialization = useAutoCaptialization
         self.color = color
         self.cornerRadius = cornerRadius
         self.capsuleField = capsuleField
@@ -175,6 +179,8 @@ public struct GlassyTextFieldStyle: TextFieldStyle {
             
             configuration
                 .textFieldStyle(.plain)
+                .autocorrectionDisabled(useAutoCorrection ? false : true)
+                .autocapitalization(useAutoCaptialization ? .sentences : .none)
                 .frame(maxWidth: .infinity)
                 .foregroundStyle(fontColor)
                 .padding()
@@ -186,6 +192,8 @@ public struct GlassyTextFieldStyle: TextFieldStyle {
             
             configuration
                 .textFieldStyle(.plain)
+                .autocorrectionDisabled(useAutoCorrection ? false : true)
+                .autocapitalization(useAutoCaptialization ? .sentences : .none)
                 .frame(maxWidth: .infinity)
                 .foregroundStyle(fontColor)
                 .padding()
@@ -274,18 +282,20 @@ public struct OverlayBackground: ViewModifier {
     @State private var keyboardShown: Bool = false
     var blurRadius: CGFloat = 8
     var useDimming: Bool = true
+    var stickBottomPadding: Bool = false
     
-    public init(keyboardShown: Bool = false, blurRadius: CGFloat = 8, useDimming: Bool = true) {
+    public init(keyboardShown: Bool = false, blurRadius: CGFloat = 8, useDimming: Bool = true, stickBottomPadding: Bool = false) {
         self.keyboardShown = keyboardShown
         self.blurRadius = blurRadius
         self.useDimming = useDimming
+        self.stickBottomPadding = stickBottomPadding
     }
     
     public func body(content: Content) -> some View {
         content
             .padding(.horizontal, 25)
             .padding(.top, 30)
-            .padding(.bottom, keyboardShown ? 20 : 0)
+            .padding(.bottom, keyboardShown || stickBottomPadding ? 20 : 0)
             .background {
                 ZStack {
                     VariableBlurView(maxBlurRadius: blurRadius, direction: .blurredBottomClearTop)
