@@ -95,7 +95,7 @@ public struct TerminalContainer<Content: View>: View {
             .frame(alignment: .top)
         }
         .frame(height: 250)
-        .modifier(DynamicGlassEffect(color: color, opacity: 1.0))
+        .modifier(DynamicGlassEffect(color: color, isInteractive: false, opacity: 1.0))
     }
 }
 
@@ -442,7 +442,7 @@ public struct ListToggleItem: View {
                         }
                     }
                 }
-                .modifier(GlassyListRowBackground(isOn: isOn))
+                .modifier(GlassyListRowBackground())
             } else {
                 Button(action: {
                     isOn.toggle()

@@ -207,13 +207,11 @@ public struct GlassyTextFieldStyle: TextFieldStyle {
 public struct GlassyListRowBackground: ViewModifier {
     var color: Color = .accentColor
     var cornerRadius: CGFloat = conditionalCornerRadius()
-    var isOn: Bool = false
     var isInteractive: Bool = true
     
-    public init(color: Color = .accentColor, cornerRadius: CGFloat = conditionalCornerRadius(), isOn: Bool = false, isInteractive: Bool = true) {
+    public init(color: Color = .accentColor, cornerRadius: CGFloat = conditionalCornerRadius(), isInteractive: Bool = true) {
         self.color = color
         self.cornerRadius = cornerRadius
-        self.isOn = isOn
         self.isInteractive = isInteractive
     }
     
@@ -226,7 +224,6 @@ public struct GlassyListRowBackground: ViewModifier {
                 .background(color.opacity(0.2))
                 .clipShape(.rect(cornerRadius: cornerRadius))
                 .glassEffect(isInteractive ? .regular.interactive() : .regular, in: .rect(cornerRadius: cornerRadius))
-                .opacity(isOn ? 1.0 : 0.8)
         } else {
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -234,7 +231,6 @@ public struct GlassyListRowBackground: ViewModifier {
                 .padding()
                 .background(color.opacity(0.2))
                 .clipShape(.rect(cornerRadius: cornerRadius))
-                .opacity(isOn ? 1.0 : 0.8)
         }
     }
 }
