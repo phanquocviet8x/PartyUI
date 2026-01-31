@@ -392,7 +392,7 @@ public struct ContextualWarning: View {
     }
     
     public var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             if !icon.isEmpty {
                 Image(systemName: icon)
                     .font(.title)
@@ -400,8 +400,9 @@ public struct ContextualWarning: View {
             }
             VStack(alignment: .leading) {
                 Text(label)
-                    .font(.system(.title3, weight: .semibold))
+                    .fontWeight(.semibold)
                 Text(text)
+                    .font(.subheadline)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

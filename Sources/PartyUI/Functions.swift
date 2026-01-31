@@ -168,7 +168,7 @@ public func platterBackgroundColor() -> Color {
     if #available(iOS 26.0, *) {
         return Color.clear
     } else {
-        return Color(.secondarySystemBackground)
+        return Color(.quaternarySystemFill)
     }
 }
 

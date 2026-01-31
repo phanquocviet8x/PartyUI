@@ -14,11 +14,15 @@ public struct GlassyPlatter: ViewModifier {
     var color: Color = platterBackgroundColor()
     var shape: AnyShape = AnyShape(.rect(cornerRadius: platterCornerRadius()))
     var isInteractive: Bool = true
+    var useCustomPadding: Bool = false
+    var paddingAmount: CGFloat = 12
     
-    public init(color: Color = platterBackgroundColor(), shape: AnyShape = AnyShape(.rect(cornerRadius: platterCornerRadius())), isInteractive: Bool = true) {
+    public init(color: Color = platterBackgroundColor(), shape: AnyShape = AnyShape(.rect(cornerRadius: platterCornerRadius())), isInteractive: Bool = true, useCustomPadding: Bool = false, paddingAmount: CGFloat = 12) {
         self.color = color
         self.shape = shape
         self.isInteractive = isInteractive
+        self.useCustomPadding = useCustomPadding
+        self.paddingAmount = paddingAmount
     }
     
     public func body(content: Content) -> some View {
@@ -26,14 +30,22 @@ public struct GlassyPlatter: ViewModifier {
             if isInteractive {
                 content
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    .if(useCustomPadding) { view in
+                        view.padding(paddingAmount)
+                    } else: { view in
+                        view.padding()
+                    }
                     .background(color)
                     .clipShape(shape)
                     .glassEffect(.regular.interactive(), in: shape)
             } else {
                 content
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    .if(useCustomPadding) { view in
+                        view.padding(paddingAmount)
+                    } else: { view in
+                        view.padding()
+                    }
                     .background(color)
                     .clipShape(shape)
                     .glassEffect(.regular, in: shape)
@@ -41,7 +53,11 @@ public struct GlassyPlatter: ViewModifier {
         } else {
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
+                .if(useCustomPadding) { view in
+                    view.padding(paddingAmount)
+                } else: { view in
+                    view.padding()
+                }
                 .background(color)
                 .clipShape(shape)
         }
