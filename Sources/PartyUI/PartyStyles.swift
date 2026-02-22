@@ -145,7 +145,7 @@ public struct GlassyButtonStyle: PrimitiveButtonStyle {
                 .glassEffect(effectiveInteractive ? .regularInteractive : .regular, in: shape)
                 .opacity(isPressed ? 0.8 : 1.0)
                 .scaleEffect(isPressed ? 0.98 : 1.0)
-                .animation(isPressed ? .none : .spring(response: 0.4, dampingFraction: 0.6), value: isPressed)
+                .animation(isPressed ? nil : .spring(response: 0.4, dampingFraction: 0.6), value: isPressed)
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { _ in
