@@ -19,27 +19,6 @@ import UIKit
 // same call shape used in PartyUI.
 // If Apple later ships a real `.glassEffect` with the same signature,
 // this overload is marked disfavored so the system one wins.
-public enum GlassEffectStyle: Sendable, Equatable {
-    case regular
-    case regularInteractive
-
-    public func interactive() -> GlassEffectStyle { .regularInteractive }
-}
-
-public extension View {
-    @_disfavoredOverload
-    @MainActor
-    func glassEffect<S: Shape>(_ style: GlassEffectStyle, in shape: S) -> some View {
-        // Fallback "glass": material background + subtle highlight, clipped to shape.
-        self
-            .background(.ultraThinMaterial)
-            .overlay {
-                shape
-                    .strokeBorder(.white.opacity(style == .regularInteractive ? 0.22 : 0.14), lineWidth: 1)
-            }
-            .clipShape(shape)
-    }
-}
 
 // MARK: - Styles
 
