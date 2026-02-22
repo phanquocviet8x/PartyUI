@@ -164,7 +164,7 @@ public struct GlassyButtonStyle: PrimitiveButtonStyle {
 }
 
 @MainActor
-public struct GlassyTextFieldStyle: TextFieldStyle {
+public struct GlassyTextFieldStyle: @preconcurrency TextFieldStyle {
     var isDisabled: Bool = false
     var useAutoCorrection: Bool = true
     var useAutoCaptialization: Bool = true
